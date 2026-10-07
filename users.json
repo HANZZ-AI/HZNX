@@ -1,0 +1,19 @@
+{
+  "users": [
+    {
+      "username": "HANZZ",
+      "password": "HANZZXDEV",
+      "role": "Admin"
+    },
+    {
+      "username": "VIP",
+      "password": "BYHANZZ",
+      "role": "VIP"
+    },
+    {
+      "username": "FREE",
+      "password": "BYHANZZ",
+      "role": "Member"
+    }
+  ]
+}
