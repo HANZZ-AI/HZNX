@@ -14,6 +14,11 @@
       "username": "FREE",
       "password": "BYHANZZ",
       "role": "Member"
+    },
+    {
+      "username": "Tes",
+      "password": "Login",
+      "role": "Member"
     }
   ]
 }
