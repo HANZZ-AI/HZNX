@@ -19,6 +19,11 @@
       "username": "Tes",
       "password": "Login",
       "role": "Member"
+    },
+    {
+      "username": "Tesy",
+      "password": "1234",
+      "role": "Admin"
     }
   ]
 }
