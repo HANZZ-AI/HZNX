@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HZNX - Sign Up</title>
+  <link rel="icon" type="image/png" href="src/assets/img/icon/icon.png">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: #0a0a0a;
+      background-image:
+        radial-gradient(circle at 20% 30%, rgba(255, 0, 0, 0.15), transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(255, 0, 0, 0.1), transparent 40%);
+    }
+    .login-box {
+      background: #111111;
+      padding: 40px;
+      border-radius: 12px;
+      border: 1px solid #2a0000;
+      box-shadow: 0 0 30px rgba(255, 0, 0, 0.25), 0 10px 40px rgba(0, 0, 0, 0.8);
+      width: 100%;
+      max-width: 380px;
+    }
+    .logo-wrap { display: flex; justify-content: center; margin-bottom: 20px; }
+    .logo-wrap img {
+      width: 90px; height: 90px; object-fit: contain;
+      filter: drop-shadow(0 0 15px rgba(255, 0, 0, 0.7));
+      animation: pulseGlow 2.5s ease-in-out infinite;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { filter: drop-shadow(0 0 12px rgba(255, 0, 0, 0.5)); }
+      50%      { filter: drop-shadow(0 0 22px rgba(255, 0, 0, 0.95)); }
+    }
+    .login-box h2 {
+      text-align: center; margin-bottom: 25px; color: #ff2b2b;
+      letter-spacing: 3px; text-transform: uppercase;
+      text-shadow: 0 0 12px rgba(255, 0, 0, 0.6); font-size: 24px;
+    }
+    .form-group { margin-bottom: 18px; }
+    .form-group label {
+      display: block; margin-bottom: 6px; color: #cccccc;
+      font-size: 14px; letter-spacing: 1px;
+    }
+    .input-wrap { position: relative; }
+    .input-wrap input {
+      width: 100%; padding: 12px; background: #1a1a1a;
+      border: 1px solid #330000; border-radius: 8px;
+      font-size: 14px; color: #ffffff; transition: 0.3s;
+    }
+    .input-wrap input::placeholder { color: #666; }
+    .input-wrap input:focus {
+      border-color: #ff2b2b; outline: none;
+      box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.25), 0 0 12px rgba(255, 0, 0, 0.4);
+      background: #1f0a0a;
+    }
+    .input-wrap input#password { padding-right: 45px; }
+    .toggle-password {
+      position: absolute; top: 50%; right: 12px;
+      transform: translateY(-50%); background: none; border: none;
+      cursor: pointer; padding: 0; display: flex; align-items: center;
+      justify-content: center; color: #888; transition: color 0.2s;
+    }
+    .toggle-password:hover { color: #ff2b2b; }
+    .toggle-password svg { width: 20px; height: 20px; display: block; }
+    button[type="submit"] {
+      width: 100%; padding: 12px;
+      background: linear-gradient(135deg, #b30000, #ff1a1a);
+      color: #fff; border: none; border-radius: 8px; font-size: 16px;
+      font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase;
+      cursor: pointer; transition: 0.3s; margin-top: 5px;
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+    }
+    button[type="submit"]:hover {
+      background: linear-gradient(135deg, #ff1a1a, #ff4444);
+      box-shadow: 0 0 25px rgba(255, 0, 0, 0.8);
+    }
+    button[type="submit"]:disabled {
+      background: #4d0000; box-shadow: none;
+      cursor: not-allowed; color: #999;
+    }
+    .back-btn {
+      display: block; width: 100%; padding: 11px; margin-top: 12px;
+      background: transparent; color: #ff2b2b; border: 1px solid #ff2b2b;
+      border-radius: 8px; font-size: 14px; font-weight: bold;
+      letter-spacing: 1.5px; text-transform: uppercase; text-align: center;
+      text-decoration: none; cursor: pointer; transition: 0.3s;
+    }
+    .back-btn:hover {
+      background: rgba(255, 0, 0, 0.1);
+      box-shadow: 0 0 18px rgba(255, 0, 0, 0.6);
+    }
+    .error {
+      color: #ff2b2b; font-size: 13px; text-align: center;
+      margin-top: 12px; display: none;
+      text-shadow: 0 0 8px rgba(255, 0, 0, 0.6);
+    }
+    .success {
+      color: #22c55e; font-size: 13px; text-align: center;
+      margin-top: 12px; display: none;
+      text-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+    }
+    .loading {
+      color: #ffb400; font-size: 13px; text-align: center;
+      margin-top: 12px; display: none;
+      text-shadow: 0 0 8px rgba(255, 180, 0, 0.6);
+    }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <div class="logo-wrap">
+      <img src="src/assets/img/icon/icon.png" alt="HZNX Logo">
+    </div>
+
+    <h2>Sign Up HZNX</h2>
+
+    <form id="signupForm" autocomplete="off">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <div class="input-wrap">
+          <input type="text" id="username" placeholder="Buat username" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-wrap">
+          <input type="password" id="password" placeholder="Buat password" required>
+          <button type="button" class="toggle-password" id="togglePassword" aria-label="Tampilkan password">
+            <svg id="eyeOpen" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <svg id="eyeClosed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                 style="display:none;">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" id="submitBtn">Buat Akun</button>
+      <a href="index.html" class="back-btn">Kembali ke Login</a>
+
+      <p class="error" id="errorMsg"></p>
+      <p class="success" id="successMsg"></p>
+      <p class="loading" id="loadingMsg">Menyimpan akun ke GitHub...</p>
+    </form>
+  </div>
+
+  <script>
+    // ============================================================
+    // ⚠️ KONFIGURASI GITHUB API
+    // ============================================================
+    const GITHUB_TOKEN  = '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'; // ← GANTI dengan PAT kamu
+    const GITHUB_OWNER  = 'HANZZ-AI';
+    const GITHUB_REPO   = 'HZNX';
+    const GITHUB_BRANCH = 'main';
+    const USERS_PATH    = 'users.json';
+
+    // ============================================================
+    // TOGGLE PASSWORD (mata)
+    // ============================================================
+    const toggleBtn = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    const eyeOpen = document.getElementById('eyeOpen');
+    const eyeClosed = document.getElementById('eyeClosed');
+
+    toggleBtn.addEventListener('click', () => {
+      const isHidden = passwordInput.type === 'password';
+      passwordInput.type = isHidden ? 'text' : 'password';
+      eyeOpen.style.display = isHidden ? 'none' : 'block';
+      eyeClosed.style.display = isHidden ? 'block' : 'none';
+      toggleBtn.setAttribute('aria-label', isHidden ? 'Sembunyikan password' : 'Tampilkan password');
+    });
+
+    // ============================================================
+    // HELPERS
+    // ============================================================
+    const apiURL = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${USERS_PATH}`;
+    const headers = {
+      'Authorization': `Bearer ${GITHUB_TOKEN}`,
+      'Accept': 'application/vnd.github+json',
+      'X-GitHub-Api-Version': '2022-11-28'
+    };
+
+    // Encode unicode string → base64 (untuk konten file GitHub)
+    function encodeBase64(str) {
+      return btoa(unescape(encodeURIComponent(str)));
+    }
+    // Decode base64 → unicode string
+    function decodeBase64(str) {
+      return decodeURIComponent(escape(atob(str.replace(/\s/g, ''))));
+    }
+
+    // Ambil users.json + sha terbaru dari GitHub
+    async function fetchUsersFile() {
+      const res = await fetch(`${apiURL}?ref=${GITHUB_BRANCH}&t=${Date.now()}`, {
+        headers,
+        cache: 'no-store'
+      });
+      if (!res.ok) throw new Error(`Gagal baca users.json (HTTP ${res.status})`);
+      const data = await res.json();
+      const content = decodeBase64(data.content);
+      const json = JSON.parse(content);
+      return { json, sha: data.sha };
+    }
+
+    // Simpan users.json yang sudah diupdate ke GitHub
+    async function saveUsersFile(json, sha, message) {
+      const body = {
+        message: message,
+        content: encodeBase64(JSON.stringify(json, null, 2)),
+        sha: sha,
+        branch: GITHUB_BRANCH
+      };
+      const res = await fetch(apiURL, {
+        method: 'PUT',
+        headers: { ...headers, 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(`Gagal simpan ke GitHub (HTTP ${res.status}): ${errData.message || ''}`);
+      }
+      return res.json();
+    }
+
+    // ============================================================
+    // SIGN UP
+    // ============================================================
+    const form = document.getElementById('signupForm');
+    const errorMsg = document.getElementById('errorMsg');
+    const successMsg = document.getElementById('successMsg');
+    const loadingMsg = document.getElementById('loadingMsg');
+    const submitBtn = document.getElementById('submitBtn');
+
+    function hideAll() {
+      errorMsg.style.display = 'none';
+      successMsg.style.display = 'none';
+      loadingMsg.style.display = 'none';
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      hideAll();
+
+      const username = document.getElementById('username').value.trim();
+      const password = passwordInput.value;
+
+      if (!username || !password) {
+        errorMsg.textContent = 'Username dan password wajib diisi.';
+        errorMsg.style.display = 'block';
+        return;
+      }
+
+      if (username.length < 3) {
+        errorMsg.textContent = 'Username minimal 3 karakter.';
+        errorMsg.style.display = 'block';
+        return;
+      }
+      if (password.length < 4) {
+        errorMsg.textContent = 'Password minimal 4 karakter.';
+        errorMsg.style.display = 'block';
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Memproses...';
+      loadingMsg.style.display = 'block';
+
+      try {
+        // 1. Ambil data users.json + sha terbaru
+        const { json, sha } = await fetchUsersFile();
+        const users = json.users || [];
+
+        // 2. Cek duplikat username
+        const exists = users.some(
+          u => u.username.toLowerCase() === username.toLowerCase()
+        );
+        if (exists) {
+          throw new Error('Username sudah terdaftar, gunakan yang lain.');
+        }
+
+        // 3. Tambah user baru dengan role otomatis Member
+        const newUser = {
+          username: username,
+          password: password,
+          role: 'Member'
+        };
+        users.push(newUser);
+        json.users = users;
+
+        // 4. Commit ke GitHub
+        loadingMsg.textContent = 'Menyimpan akun ke GitHub...';
+        await saveUsersFile(json, sha, `Add new user: ${username} (Member)`);
+
+        // 5. Sukses
+        loadingMsg.style.display = 'none';
+        successMsg.textContent = 'Akun berhasil dibuat! Mengalihkan ke login...';
+        successMsg.style.display = 'block';
+
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 1400);
+
+      } catch (err) {
+        loadingMsg.style.display = 'none';
+        errorMsg.textContent = err.message;
+        errorMsg.style.display = 'block';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Buat Akun';
+      }
+    });
+  </script>
+</body>
+</html>

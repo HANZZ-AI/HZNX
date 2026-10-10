@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HZNX - Profile</title>
+  <link rel="icon" type="image/png" href="src/assets/img/icon/icon.png">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+    body {
+      min-height: 100vh; background: #0a0a0a;
+      background-image:
+        radial-gradient(circle at 10% 10%, rgba(255, 0, 0, 0.12), transparent 40%),
+        radial-gradient(circle at 90% 90%, rgba(255, 0, 0, 0.08), transparent 40%);
+      color: #e5e5e5;
+      padding: 24px;
+      padding-bottom: 100px; /* ruang untuk navbar bawah */
+    }
+
+    /* ================= TOPBAR ================= */
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 22px; background: #111;
+      border: 1px solid #2a0000; border-radius: 12px;
+      box-shadow: 0 0 22px rgba(255, 0, 0, 0.22);
+      margin-bottom: 22px; flex-wrap: wrap; gap: 12px;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand img {
+      width: 42px; height: 42px; object-fit: contain;
+      filter: drop-shadow(0 0 10px rgba(255, 0, 0, 0.7));
+    }
+    .brand h1 {
+      font-size: 20px; letter-spacing: 3px; color: #ff2b2b;
+      text-transform: uppercase; text-shadow: 0 0 10px rgba(255, 0, 0, 0.7);
+    }
+    .brand small {
+      display: block; color: #888; font-size: 11px;
+      letter-spacing: 2px; font-weight: normal; margin-top: 2px;
+    }
+    .user-info { display: flex; align-items: center; gap: 12px; }
+    .user-info .who { text-align: right; font-size: 13px; }
+    .user-info .who strong { color: #ff2b2b; }
+    .logout-btn {
+      padding: 9px 16px; background: transparent;
+      color: #ff2b2b; border: 1px solid #ff2b2b; border-radius: 8px;
+      font-size: 12px; font-weight: bold; letter-spacing: 1.5px;
+      text-transform: uppercase; cursor: pointer; transition: 0.3s;
+    }
+    .logout-btn:hover {
+      background: rgba(255,0,0,0.12);
+      box-shadow: 0 0 15px rgba(255,0,0,0.6);
+    }
+
+    /* ================= BOTTOM NAVBAR ================= */
+    .bottom-nav {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #111;
+      border: 1px solid #2a0000;
+      border-radius: 999px;
+      padding: 8px;
+      display: flex;
+      gap: 6px;
+      box-shadow: 0 0 25px rgba(255, 0, 0, 0.35), 0 10px 30px rgba(0, 0, 0, 0.9);
+      z-index: 500;
+      backdrop-filter: blur(8px);
+    }
+    .bottom-nav a {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 22px;
+      color: #aaa;
+      text-decoration: none;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      transition: 0.3s;
+      white-space: nowrap;
+    }
+    .bottom-nav a svg {
+      width: 16px; height: 16px;
+      stroke: currentColor;
+      flex-shrink: 0;
+    }
+    .bottom-nav a:hover {
+      color: #ff2b2b;
+      background: rgba(255, 0, 0, 0.08);
+    }
+    .bottom-nav a.active {
+      background: linear-gradient(135deg, #b30000, #ff1a1a);
+      color: #fff;
+      box-shadow: 0 0 18px rgba(255, 0, 0, 0.7);
+    }
+    .bottom-nav a.active svg {
+      filter: drop-shadow(0 0 5px rgba(255,255,255,0.6));
+    }
+
+    /* ================= PROFILE CARD ================= */
+    .profile-wrap { max-width: 720px; margin: 0 auto; }
+    .profile-card {
+      background: #111;
+      border: 1px solid #2a0000;
+      border-radius: 14px;
+      padding: 34px 28px;
+      box-shadow: 0 0 30px rgba(255, 0, 0, 0.2);
+      text-align: center;
+    }
+    .profile-card h2 {
+      color: #ff2b2b;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      font-size: 18px;
+      margin-bottom: 22px;
+      text-shadow: 0 0 12px rgba(255, 0, 0, 0.6);
+      padding-bottom: 14px;
+      border-bottom: 1px solid #2a0000;
+    }
+
+    /* Avatar */
+    .avatar-wrap {
+      position: relative;
+      width: 160px; height: 160px;
+      margin: 0 auto 24px;
+      cursor: pointer;
+      transition: 0.3s;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .avatar-wrap:hover { transform: scale(1.03); }
+    .avatar-wrap:active { transform: scale(0.98); }
+    .avatar-ring {
+      position: absolute; inset: -4px;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, #ff2b2b, #7a0000, #ff2b2b);
+      animation: spinRing 4s linear infinite;
+      filter: blur(1px);
+      z-index: 0;
+      pointer-events: none;
+    }
+    @keyframes spinRing { to { transform: rotate(360deg); } }
+    .avatar-inner {
+      position: relative;
+      width: 100%; height: 100%;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #1a1a1a;
+      border: 3px solid #0a0a0a;
+      z-index: 1;
+      display: flex; align-items: center; justify-content: center;
+      pointer-events: none; /* biar klik tembus ke .avatar-wrap */
+    }
+    .avatar-inner img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .avatar-initials {
+      font-size: 56px;
+      font-weight: bold;
+      color: #ff2b2b;
+      text-shadow: 0 0 18px rgba(255, 0, 0, 0.7);
+      letter-spacing: 2px;
+      user-select: none;
+    }
+    .avatar-hint {
+      position: absolute;
+      bottom: -6px; left: 50%;
+      transform: translateX(-50%);
+      background: #111;
+      border: 1px solid #ff2b2b;
+      color: #ff2b2b;
+      font-size: 10px;
+      font-weight: bold;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 999px;
+      white-space: nowrap;
+      z-index: 2;
+      box-shadow: 0 0 12px rgba(255, 0, 0, 0.5);
+      transition: 0.3s;
+      pointer-events: none;
+    }
+    .avatar-wrap:hover .avatar-hint {
+      background: linear-gradient(135deg, #b30000, #ff1a1a);
+      color: #fff;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.9);
+    }
+
+    /* Input file — jangan display:none, pakai sr-only biar iOS tetap buka picker */
+    #fileInput {
+      position: absolute;
+      width: 1px; height: 1px;
+      opacity: 0;
+      pointer-events: none;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+
+    /* Info rows */
+    .info-list { display: flex; flex-direction: column; gap: 12px; margin-top: 12px; }
+    .info-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 18px;
+      background: #161616;
+      border: 1px solid #2a0000;
+      border-radius: 10px;
+      transition: 0.25s;
+      gap: 14px;
+      text-align: left;
+    }
+    .info-row:hover {
+      border-color: #ff2b2b;
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+      transform: translateY(-1px);
+    }
+    .info-label {
+      display: flex; align-items: center; gap: 10px;
+      color: #aaa;
+      font-size: 12px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+    .info-label svg {
+      width: 18px; height: 18px;
+      stroke: #ff2b2b;
+      filter: drop-shadow(0 0 5px rgba(255,43,43,0.7));
+      flex-shrink: 0;
+    }
+    .info-value {
+      color: #fff;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      word-break: break-all;
+      justify-content: flex-end;
+      flex: 1;
+      min-width: 0;
+    }
+    .info-value.mono {
+      font-family: 'Consolas', monospace;
+      font-size: 14px;
+      letter-spacing: 1.5px;
+    }
+    .toggle-pass {
+      background: none; border: none; cursor: pointer;
+      color: #888; padding: 0;
+      display: flex; align-items: center;
+      transition: color 0.2s;
+    }
+    .toggle-pass:hover { color: #ff2b2b; }
+    .toggle-pass svg { width: 18px; height: 18px; }
+
+    .role-badge {
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: bold;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .role-Member {
+      color: #22c55e; background: rgba(34, 197, 94, 0.12);
+      border: 1px solid #22c55e;
+      text-shadow: 0 0 8px rgba(34, 197, 94, 0.7);
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.25);
+    }
+    .role-VIP {
+      color: #facc15; background: rgba(250, 204, 21, 0.12);
+      border: 1px solid #facc15;
+      text-shadow: 0 0 8px rgba(250, 204, 21, 0.7);
+      box-shadow: 0 0 10px rgba(250, 204, 21, 0.25);
+    }
+    .role-Admin {
+      color: #ff2b2b; background: rgba(255, 43, 43, 0.12);
+      border: 1px solid #ff2b2b;
+      text-shadow: 0 0 8px rgba(255, 43, 43, 0.7);
+      box-shadow: 0 0 10px rgba(255, 43, 43, 0.35);
+    }
+
+    /* MODAL */
+    .modal-backdrop {
+      position: fixed; inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      display: none; align-items: center; justify-content: center;
+      z-index: 1000; padding: 20px;
+      animation: fadeIn 0.2s ease;
+    }
+    .modal-backdrop.show { display: flex; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .modal {
+      background: #111; border: 1px solid #2a0000;
+      border-radius: 14px; padding: 28px;
+      width: 100%; max-width: 420px;
+      box-shadow: 0 0 40px rgba(255, 0, 0, 0.35), 0 20px 60px rgba(0, 0, 0, 0.9);
+      animation: popIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes popIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+    .modal-icon {
+      width: 64px; height: 64px;
+      margin: 0 auto 16px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%;
+    }
+    .modal-icon svg { width: 36px; height: 36px; }
+    .modal-icon.danger {
+      background: rgba(255, 43, 43, 0.12);
+      border: 2px solid #ff2b2b;
+      box-shadow: 0 0 25px rgba(255, 43, 43, 0.5);
+    }
+    .modal-icon.danger svg { stroke: #ff2b2b; filter: drop-shadow(0 0 6px rgba(255,43,43,0.9)); }
+    .modal-icon.success {
+      background: rgba(34, 197, 94, 0.12);
+      border: 2px solid #22c55e;
+      box-shadow: 0 0 25px rgba(34, 197, 94, 0.5);
+    }
+    .modal-icon.success svg { stroke: #22c55e; filter: drop-shadow(0 0 6px rgba(34,197,94,0.9)); }
+    .modal h3 {
+      text-align: center; font-size: 18px;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: #ff2b2b; margin-bottom: 10px;
+      text-shadow: 0 0 12px rgba(255, 0, 0, 0.6);
+    }
+    .modal h3.success { color: #22c55e; text-shadow: 0 0 12px rgba(34,197,94,0.6); }
+    .modal p {
+      text-align: center; color: #bbb;
+      font-size: 14px; line-height: 1.6;
+      margin-bottom: 22px; word-break: break-word;
+    }
+    .modal p strong { color: #ff2b2b; }
+    .modal-actions { display: flex; gap: 10px; }
+    .btn-ghost {
+      flex: 1; padding: 12px;
+      background: transparent; color: #ccc;
+      border: 1px solid #444; border-radius: 8px;
+      font-size: 14px; font-weight: bold; letter-spacing: 1.5px;
+      text-transform: uppercase; cursor: pointer; transition: 0.3s;
+      font-family: inherit;
+    }
+    .btn-ghost:hover {
+      color: #fff; border-color: #888;
+      background: rgba(255,255,255,0.03);
+    }
+    .btn-confirm-danger {
+      flex: 1; padding: 12px;
+      background: linear-gradient(135deg, #b30000, #ff1a1a);
+      color: #fff; border: none; border-radius: 8px;
+      font-size: 14px; font-weight: bold; letter-spacing: 1.5px;
+      text-transform: uppercase; cursor: pointer; transition: 0.3s;
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+      font-family: inherit;
+    }
+    .btn-confirm-danger:hover {
+      background: linear-gradient(135deg, #ff1a1a, #ff4444);
+      box-shadow: 0 0 25px rgba(255, 0, 0, 0.85);
+    }
+    .btn-confirm-success {
+      flex: 1; padding: 12px;
+      background: linear-gradient(135deg, #15803d, #22c55e);
+      color: #fff; border: none; border-radius: 8px;
+      font-size: 14px; font-weight: bold; letter-spacing: 1.5px;
+      text-transform: uppercase; cursor: pointer; transition: 0.3s;
+      box-shadow: 0 0 15px rgba(34, 197, 94, 0.5);
+      font-family: inherit;
+    }
+    .btn-confirm-success:hover {
+      background: linear-gradient(135deg, #22c55e, #4ade80);
+      box-shadow: 0 0 25px rgba(34, 197, 94, 0.85);
+    }
+
+    @media (max-width: 500px) {
+      body { padding: 16px; padding-bottom: 100px; }
+      .info-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .info-value { justify-content: flex-start; }
+      .avatar-wrap { width: 130px; height: 130px; }
+      .avatar-initials { font-size: 46px; }
+      .bottom-nav a { padding: 10px 16px; font-size: 11px; }
+      .bottom-nav a span { display: none; } /* hanya ikon kalau layar kecil */
+      .bottom-nav a { padding: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🔒 GUARD -->
+  <script>
+    (function guard() {
+      const SESSION_KEY = 'hznxSession';
+      const raw = localStorage.getItem(SESSION_KEY);
+      if (!raw) { window.location.replace('index.html'); return; }
+      let user;
+      try { user = JSON.parse(raw); }
+      catch (e) {
+        localStorage.removeItem(SESSION_KEY);
+        window.location.replace('index.html');
+        return;
+      }
+      if (!user || !user.username) {
+        window.location.replace('index.html');
+        return;
+      }
+      window.CURRENT_USER = user;
+    })();
+  </script>
+
+  <!-- MODAL -->
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal">
+      <div class="modal-icon" id="modalIcon"></div>
+      <h3 id="modalTitle"></h3>
+      <p id="modalMessage"></p>
+      <div class="modal-actions" id="modalActions"></div>
+    </div>
+  </div>
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="brand">
+      <img src="src/assets/img/icon/icon.png" alt="HZNX">
+      <div>
+        <h1>HZNX</h1>
+        <small>Profile</small>
+      </div>
+    </div>
+    <div class="user-info">
+      <div class="who">Login sebagai<br><strong id="currentUser">-</strong></div>
+      <button class="logout-btn" id="logoutBtn">Logout</button>
+    </div>
+  </div>
+
+  <!-- PROFILE -->
+  <div class="profile-wrap">
+    <div class="profile-card">
+      <h2>Profil Saya</h2>
+
+      <div class="avatar-wrap" id="avatarWrap" title="Klik untuk ganti foto">
+        <div class="avatar-ring"></div>
+        <div class="avatar-inner" id="avatarInner">
+          <span class="avatar-initials" id="avatarInitials">?</span>
+        </div>
+        <div class="avatar-hint">Ganti Foto</div>
+      </div>
+      <input type="file" id="fileInput" accept="image/*">
+
+      <div class="info-list">
+        <div class="info-row">
+          <div class="info-label">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+            Username
+          </div>
+          <div class="info-value" id="infoUsername">-</div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-label">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            Password
+          </div>
+          <div class="info-value mono">
+            <span id="infoPassword">••••••••</span>
+            <button type="button" class="toggle-pass" id="togglePassBtn" aria-label="Tampilkan password">
+              <svg id="eyeOpen" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+              <svg id="eyeClosed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                   style="display:none;">
+                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+                <line x1="1" y1="1" x2="23" y2="23"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-label">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+            Role
+          </div>
+          <div class="info-value">
+            <span class="role-badge" id="infoRole">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= BOTTOM NAVBAR ================= -->
+  <div class="bottom-nav">
+    <a href="dashboard.html">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+      <span>Dashboard</span>
+    </a>
+    <a href="profile.html" class="active">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+           stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+        <circle cx="12" cy="7" r="4"/>
+      </svg>
+      <span>Profile</span>
+    </a>
+  </div>
+
+  <script>
+    // ============================================================
+    // KONFIG
+    // ============================================================
+    const USERS_URL = 'https://raw.githubusercontent.com/HANZZ-AI/HZNX/refs/heads/main/users.json';
+    const SESSION_KEY = 'hznxSession';
+    const AVATAR_PREFIX = 'hznxAvatar_';
+
+    const me = window.CURRENT_USER;
+
+    // ============================================================
+    // MODAL SYSTEM
+    // ============================================================
+    const modalBackdrop = document.getElementById('modalBackdrop');
+    const modalIcon = document.getElementById('modalIcon');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalMessage = document.getElementById('modalMessage');
+    const modalActions = document.getElementById('modalActions');
+
+    const ICONS = {
+      danger: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                 <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                 <line x1="12" y1="9" x2="12" y2="13"/>
+                 <line x1="12" y1="17" x2="12.01" y2="17"/>
+               </svg>`,
+      success: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                  <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>`
+    };
+
+    function showModal({ type = 'danger', title = '', message = '', buttons = [] }) {
+      modalIcon.className = 'modal-icon ' + type;
+      modalIcon.innerHTML = ICONS[type] || ICONS.danger;
+      modalTitle.className = type === 'success' ? 'success' : '';
+      modalTitle.textContent = title;
+      modalMessage.innerHTML = message;
+
+      modalActions.innerHTML = '';
+      buttons.forEach(btn => {
+        const el = document.createElement('button');
+        el.textContent = btn.label;
+        el.className = btn.style || 'btn-ghost';
+        el.addEventListener('click', () => {
+          hideModal();
+          if (typeof btn.onClick === 'function') btn.onClick();
+        });
+        modalActions.appendChild(el);
+      });
+      modalBackdrop.classList.add('show');
+    }
+    function hideModal() { modalBackdrop.classList.remove('show'); }
+
+    modalBackdrop.addEventListener('click', (e) => {
+      if (e.target === modalBackdrop) hideModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modalBackdrop.classList.contains('show')) hideModal();
+    });
+
+    function alertModal(type, title, message) {
+      return new Promise(resolve => {
+        showModal({
+          type, title, message,
+          buttons: [{
+            label: 'OK',
+            style: type === 'success' ? 'btn-confirm-success' : 'btn-confirm-danger',
+            onClick: () => resolve(true)
+          }]
+        });
+      });
+    }
+    function confirmModal(title, message, confirmLabel = 'Ya') {
+      return new Promise(resolve => {
+        showModal({
+          type: 'danger', title, message,
+          buttons: [
+            { label: 'Batal', style: 'btn-ghost', onClick: () => resolve(false) },
+            { label: confirmLabel, style: 'btn-confirm-danger', onClick: () => resolve(true) }
+          ]
+        });
+      });
+    }
+
+    // ============================================================
+    // SET INFO USER
+    // ============================================================
+    document.getElementById('currentUser').textContent = me.username + ' (' + me.role + ')';
+    document.getElementById('infoUsername').textContent = me.username;
+
+    const roleBadge = document.getElementById('infoRole');
+    roleBadge.textContent = me.role;
+    roleBadge.className = 'role-badge role-' + me.role;
+
+    // ============================================================
+    // PASSWORD dari users.json
+    // ============================================================
+    const infoPassword = document.getElementById('infoPassword');
+    const togglePassBtn = document.getElementById('togglePassBtn');
+    const eyeOpen = document.getElementById('eyeOpen');
+    const eyeClosed = document.getElementById('eyeClosed');
+
+    let realPassword = '';
+    let passVisible = false;
+
+    async function loadPassword() {
+      try {
+        const res = await fetch(USERS_URL + '?t=' + Date.now(), { cache: 'no-store' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        const user = (data.users || []).find(
+          u => u.username.toLowerCase() === me.username.toLowerCase()
+        );
+        if (user) {
+          realPassword = user.password;
+          if (user.role !== me.role) {
+            me.role = user.role;
+            localStorage.setItem(SESSION_KEY, JSON.stringify(me));
+            roleBadge.textContent = user.role;
+            roleBadge.className = 'role-badge role-' + user.role;
+            document.getElementById('currentUser').textContent = me.username + ' (' + me.role + ')';
+          }
+        }
+        renderPassword();
+      } catch (err) {
+        infoPassword.textContent = '••••••••';
+      }
+    }
+
+    function renderPassword() {
+      if (!realPassword) { infoPassword.textContent = '••••••••'; return; }
+      infoPassword.textContent = passVisible
+        ? realPassword
+        : '•'.repeat(Math.max(8, realPassword.length));
+    }
+
+    togglePassBtn.addEventListener('click', () => {
+      passVisible = !passVisible;
+      eyeOpen.style.display = passVisible ? 'none' : 'block';
+      eyeClosed.style.display = passVisible ? 'block' : 'none';
+      renderPassword();
+    });
+
+    // ============================================================
+    // FOTO PROFIL
+    // ============================================================
+    const avatarWrap = document.getElementById('avatarWrap');
+    const avatarInner = document.getElementById('avatarInner');
+    const fileInput = document.getElementById('fileInput');
+
+    function avatarKey(username) {
+      return AVATAR_PREFIX + username.toLowerCase();
+    }
+
+    function renderAvatar() {
+      const saved = localStorage.getItem(avatarKey(me.username));
+      if (saved) {
+        avatarInner.innerHTML = `<img src="${saved}" alt="Avatar">`;
+      } else {
+        avatarInner.innerHTML = `<span class="avatar-initials">${me.username.charAt(0).toUpperCase()}</span>`;
+      }
+    }
+
+    // ---- KLIK AVATAR → buka file picker ----
+    avatarWrap.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      console.log('[Avatar] wrap clicked, opening file picker...');
+      fileInput.click();
+    });
+
+    // ---- FILE DIPILIH ----
+    fileInput.addEventListener('change', async function (e) {
+      const file = e.target.files && e.target.files[0];
+      console.log('[Avatar] file selected:', file);
+      if (!file) return;
+
+      if (!file.type.startsWith('image/')) {
+        fileInput.value = '';
+        return alertModal('danger', 'File Tidak Valid',
+          'Hanya file gambar (JPG, PNG, GIF, WEBP) yang diperbolehkan.');
+      }
+
+      const MAX_SIZE = 3 * 1024 * 1024;
+      if (file.size > MAX_SIZE) {
+        fileInput.value = '';
+        return alertModal('danger', 'File Terlalu Besar',
+          'Ukuran gambar maksimal <strong>3 MB</strong>.<br>File kamu: <strong>' +
+          (file.size / 1024 / 1024).toFixed(2) + ' MB</strong>.');
+      }
+
+      try {
+        const dataUrl = await resizeImage(file, 400, 400);
+        console.log('[Avatar] resized, size =', Math.round(dataUrl.length / 1024), 'KB');
+
+        try {
+          localStorage.setItem(avatarKey(me.username), dataUrl);
+        } catch (err) {
+          throw new Error('Penyimpanan browser penuh. Gunakan gambar yang lebih kecil.');
+        }
+
+        renderAvatar();
+        await alertModal('success', 'Berhasil',
+          'Foto profil kamu berhasil diperbarui.');
+      } catch (err) {
+        console.error('[Avatar] error:', err);
+        await alertModal('danger', 'Gagal Upload', err.message);
+      } finally {
+        fileInput.value = '';
+      }
+    });
+
+    function resizeImage(file, maxW, maxH) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = () => reject(new Error('Gagal membaca file.'));
+        reader.onload = (ev) => {
+          const img = new Image();
+          img.onerror = () => reject(new Error('Gambar rusak atau tidak bisa dibaca.'));
+          img.onload = () => {
+            let { width, height } = img;
+            const ratio = Math.min(maxW / width, maxH / height, 1);
+            width  = Math.round(width  * ratio);
+            height = Math.round(height * ratio);
+
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            resolve(canvas.toDataURL('image/jpeg', 0.85));
+          };
+          img.src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // ============================================================
+    // LOGOUT
+    // ============================================================
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      const ok = await confirmModal(
+        'Konfirmasi Logout',
+        'Yakin ingin keluar dari akun ini?<br>Foto profil akan tetap tersimpan di browser.',
+        'Ya, Logout'
+      );
+      if (ok) {
+        localStorage.removeItem(SESSION_KEY);
+        window.location.href = 'index.html';
+      }
+    });
+
+    // ============================================================
+    // INIT
+    // ============================================================
+    renderAvatar();
+    loadPassword();
+  </script>
+</body>
+</html>

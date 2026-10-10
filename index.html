@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HZNX - Login</title>
+  <link rel="icon" type="image/png" href="src/assets/img/icon/icon.png">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+    body {
+      display: flex; justify-content: center; align-items: center;
+      min-height: 100vh; background: #0a0a0a;
+      background-image:
+        radial-gradient(circle at 20% 30%, rgba(255, 0, 0, 0.15), transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(255, 0, 0, 0.1), transparent 40%);
+    }
+    .login-box {
+      background: #111; padding: 40px; border-radius: 12px;
+      border: 1px solid #2a0000;
+      box-shadow: 0 0 30px rgba(255, 0, 0, 0.25), 0 10px 40px rgba(0, 0, 0, 0.8);
+      width: 100%; max-width: 380px;
+    }
+    .logo-wrap { display: flex; justify-content: center; margin-bottom: 20px; }
+    .logo-wrap img {
+      width: 90px; height: 90px; object-fit: contain;
+      filter: drop-shadow(0 0 15px rgba(255, 0, 0, 0.7));
+      animation: pulseGlow 2.5s ease-in-out infinite;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { filter: drop-shadow(0 0 12px rgba(255, 0, 0, 0.5)); }
+      50%      { filter: drop-shadow(0 0 22px rgba(255, 0, 0, 0.95)); }
+    }
+    .login-box h2 {
+      text-align: center; margin-bottom: 25px; color: #ff2b2b;
+      letter-spacing: 3px; text-transform: uppercase;
+      text-shadow: 0 0 12px rgba(255, 0, 0, 0.6); font-size: 24px;
+    }
+    .form-group { margin-bottom: 18px; }
+    .form-group label {
+      display: block; margin-bottom: 6px; color: #ccc;
+      font-size: 14px; letter-spacing: 1px;
+    }
+    .input-wrap { position: relative; }
+    .input-wrap input {
+      width: 100%; padding: 12px; background: #1a1a1a;
+      border: 1px solid #330000; border-radius: 8px;
+      font-size: 14px; color: #fff; transition: 0.3s;
+    }
+    .input-wrap input::placeholder { color: #666; }
+    .input-wrap input:focus {
+      border-color: #ff2b2b; outline: none;
+      box-shadow: 0 0 0 3px rgba(255, 0, 0, 0.25), 0 0 12px rgba(255, 0, 0, 0.4);
+      background: #1f0a0a;
+    }
+    .input-wrap input#password { padding-right: 45px; }
+    .toggle-password {
+      position: absolute; top: 50%; right: 12px; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; padding: 0;
+      display: flex; align-items: center; justify-content: center;
+      color: #888; transition: color 0.2s;
+    }
+    .toggle-password:hover { color: #ff2b2b; }
+    .toggle-password svg { width: 20px; height: 20px; display: block; }
+    button[type="submit"] {
+      width: 100%; padding: 12px;
+      background: linear-gradient(135deg, #b30000, #ff1a1a);
+      color: #fff; border: none; border-radius: 8px; font-size: 16px;
+      font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase;
+      cursor: pointer; transition: 0.3s; margin-top: 5px;
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+    }
+    button[type="submit"]:hover {
+      background: linear-gradient(135deg, #ff1a1a, #ff4444);
+      box-shadow: 0 0 25px rgba(255, 0, 0, 0.8);
+    }
+    button[type="submit"]:disabled {
+      background: #4d0000; box-shadow: none; cursor: not-allowed; color: #999;
+    }
+    .signup-btn {
+      display: block; width: 100%; padding: 11px; margin-top: 12px;
+      background: transparent; color: #ff2b2b; border: 1px solid #ff2b2b;
+      border-radius: 8px; font-size: 14px; font-weight: bold;
+      letter-spacing: 1.5px; text-transform: uppercase; text-align: center;
+      text-decoration: none; cursor: pointer; transition: 0.3s;
+    }
+    .signup-btn:hover {
+      background: rgba(255, 0, 0, 0.1);
+      box-shadow: 0 0 18px rgba(255, 0, 0, 0.6);
+    }
+    .error {
+      color: #ff2b2b; font-size: 13px; text-align: center;
+      margin-top: 12px; display: none;
+      text-shadow: 0 0 8px rgba(255, 0, 0, 0.6);
+    }
+    .success {
+      color: #22c55e; font-size: 13px; text-align: center;
+      margin-top: 12px; display: none;
+      text-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+    }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <div class="logo-wrap">
+      <img src="src/assets/img/icon/icon.png" alt="HZNX Logo">
+    </div>
+    <h2>Login HZNX</h2>
+
+    <form id="loginForm" autocomplete="off">
+      <div class="form-group">
+        <label for="username">Username</label>
+        <div class="input-wrap">
+          <input type="text" id="username" placeholder="Masukkan username" required>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-wrap">
+          <input type="password" id="password" placeholder="Masukkan password" required>
+          <button type="button" class="toggle-password" id="togglePassword" aria-label="Tampilkan password">
+            <svg id="eyeOpen" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <svg id="eyeClosed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                 style="display:none;">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" id="submitBtn">Login</button>
+      <a href="signup.html" class="signup-btn">Belum punya akun? Sign Up</a>
+
+      <p class="error" id="errorMsg"></p>
+      <p class="success" id="successMsg"></p>
+    </form>
+  </div>
+
+  <script>
+    // ==== KONFIG ====
+    const USERS_URL = 'https://raw.githubusercontent.com/HANZZ-AI/HZNX/refs/heads/main/users.json';
+    const SESSION_KEY = 'hznxSession';
+
+    // ============================================================
+    // AUTO-LOGIN: kalau sudah ada sesi, langsung redirect
+    // ============================================================
+    (function autoLogin() {
+      const raw = localStorage.getItem(SESSION_KEY);
+      if (!raw) return;
+      try {
+        const user = JSON.parse(raw);
+        if (user && user.username && user.role) {
+          // Redirect sesuai role
+          if (user.role === 'Admin') {
+            window.location.replace('admin.html');
+          } else {
+            window.location.replace('dashboard.html');
+          }
+        }
+      } catch (e) {
+        localStorage.removeItem(SESSION_KEY);
+      }
+    })();
+
+    // ==== TOGGLE PASSWORD ====
+    const toggleBtn = document.getElementById('togglePassword');
+    const passwordInput = document.getElementById('password');
+    const eyeOpen = document.getElementById('eyeOpen');
+    const eyeClosed = document.getElementById('eyeClosed');
+
+    toggleBtn.addEventListener('click', () => {
+      const isHidden = passwordInput.type === 'password';
+      passwordInput.type = isHidden ? 'text' : 'password';
+      eyeOpen.style.display = isHidden ? 'none' : 'block';
+      eyeClosed.style.display = isHidden ? 'block' : 'none';
+    });
+
+    // ==== LOGIN ====
+    const form = document.getElementById('loginForm');
+    const errorMsg = document.getElementById('errorMsg');
+    const successMsg = document.getElementById('successMsg');
+    const submitBtn = document.getElementById('submitBtn');
+
+    let cachedUsers = null;
+
+    async function loadUsers() {
+      if (cachedUsers) return cachedUsers;
+      const res = await fetch(USERS_URL + '?t=' + Date.now(), { cache: 'no-store' });
+      if (!res.ok) throw new Error('Gagal memuat data user (HTTP ' + res.status + ')');
+      const data = await res.json();
+      cachedUsers = data.users || [];
+      return cachedUsers;
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorMsg.style.display = 'none';
+      successMsg.style.display = 'none';
+
+      const username = document.getElementById('username').value.trim();
+      const password = passwordInput.value;
+
+      if (!username || !password) {
+        errorMsg.textContent = 'Username dan password wajib diisi.';
+        errorMsg.style.display = 'block';
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Memproses...';
+
+      try {
+        const users = await loadUsers();
+        const user = users.find(u => u.username === username && u.password === password);
+
+        if (!user) {
+          errorMsg.textContent = 'Username atau password salah!';
+          errorMsg.style.display = 'block';
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Login';
+          return;
+        }
+
+        // ============================================
+        // SIMPAN SESI KE LOCALSTORAGE
+        // Ini "tiket" yang dipakai semua halaman lain
+        // ============================================
+        const sessionData = {
+          username: user.username,
+          role: user.role,
+          loginAt: Date.now()
+        };
+        localStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
+
+        successMsg.textContent = `Login berhasil sebagai ${user.role}. Mengalihkan...`;
+        successMsg.style.display = 'block';
+
+        setTimeout(() => {
+          if (user.role === 'Admin') {
+            window.location.href = 'admin.html';
+          } else {
+            window.location.href = 'dashboard.html';
+          }
+        }, 600);
+
+      } catch (err) {
+        errorMsg.textContent = 'Terjadi kesalahan: ' + err.message;
+        errorMsg.style.display = 'block';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Login';
+      }
+    });
+  </script>
+</body>
+</html>
